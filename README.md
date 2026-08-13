@@ -2,14 +2,14 @@
 
 A lightning-fast, beginner-friendly meeting transcription and summarization web application powered by the Groq API.
 
-## 🚀 Overview
+## Overview
 
 This project is built from scratch in small modules to demonstrate clean architecture and seamless API integration. It uses:
 - **FastAPI (Python)** for a robust and fast backend.
 - **Vanilla HTML/CSS/JS** for a simple, dependency-free frontend.
 - **Groq API** for ultra-fast Whisper transcription and LLaMA 3 meeting summarization.
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TD
@@ -41,7 +41,7 @@ graph TD
     G -->|Meeting Minutes| E
 ```
 
-## 🛠️ Setup Instructions (Day 1)
+## Setup Instructions (Day 1)
 
 1. Clone this repository.
 2. Navigate to the `backend` folder and create a virtual environment:
