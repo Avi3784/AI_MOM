@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
@@ -32,4 +32,35 @@ async def root():
     """
     return {"message": "Welcome to AI MOM API! The server is running successfully."}
 
-# Note: We will add the WebSocket and Audio upload endpoints here in the upcoming modules.
+# DAY 2: The WebSocket Engine
+# This endpoint listens for a WebSocket connection from the frontend.
+# It receives chunks of audio in real-time.
+@app.websocket("/ws/transcribe")
+async def websocket_transcribe(websocket: WebSocket):
+    """
+    WebSocket endpoint for real-time audio transcription.
+    The client connects here and streams binary audio data.
+    """
+    # Accept the incoming WebSocket connection
+    await websocket.accept()
+    print("Client connected to WebSocket.")
+    
+    try:
+        # Keep the connection open and listen for messages indefinitely
+        while True:
+            # Receive binary audio chunk from the frontend
+            audio_chunk = await websocket.receive_bytes()
+            
+            # For Day 2, we just acknowledge receipt.
+            # In Day 3, we will send this chunk to the Groq Whisper API.
+            print(f"Received audio chunk of size: {len(audio_chunk)} bytes")
+            
+            # Send a simple text response back to the client
+            await websocket.send_text("Audio chunk received.")
+            
+    except WebSocketDisconnect:
+        # This triggers when the client closes the connection or the meeting ends
+        print("Client disconnected from WebSocket.")
+    except Exception as e:
+        # Catch any unexpected errors
+        print(f"WebSocket error: {e}")
