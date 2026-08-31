@@ -1,4 +1,5 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import tempfile
@@ -99,3 +100,50 @@ async def websocket_transcribe(websocket: WebSocket):
     except Exception as e:
         # Catch any unexpected errors
         print(f"WebSocket error: {e}")
+
+# DAY 4: The Intelligence Engine
+class TranscriptRequest(BaseModel):
+    transcript: str
+
+@app.post("/api/summarize")
+async def summarize_meeting(request: TranscriptRequest):
+    """
+    Takes the full meeting transcript and generates a summary using Groq's LLaMA 3 model.
+    """
+    if not request.transcript.strip():
+        return {"error": "Transcript is empty."}
+        
+    # The prompt instructs the AI on how to format our meeting minutes
+    system_prompt = """
+    You are an expert executive assistant. Read the provided meeting transcript and create a concise summary.
+    Please format your response in Markdown with the following sections:
+    
+    ### 📝 Meeting Overview
+    A brief summary of what the meeting was about.
+    
+    ### 🎯 Key Decisions
+    Bullet points of major decisions made.
+    
+    ### ✅ Action Items
+    A list of tasks assigned, and who they are assigned to (if mentioned).
+    """
+    
+    try:
+        print("Sending transcript to Groq for summarization...")
+        chat_completion = await groq_client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": request.transcript}
+            ],
+            model="llama3-8b-8192", # We use LLaMA 3 8B for fast and excellent summarization
+            temperature=0.5, # Slightly creative but mostly deterministic
+        )
+        
+        summary = chat_completion.choices[0].message.content
+        print("Summarization complete.")
+        return {"summary": summary}
+        
+    except Exception as e:
+        print(f"Summarization error: {e}")
+        return {"error": "Failed to generate summary."}
+
