@@ -1,8 +1,11 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import os
 import tempfile
+from pathlib import Path
 from dotenv import load_dotenv
 from groq import AsyncGroq
 
@@ -30,14 +33,21 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-# A simple root endpoint to verify our server is running properly.
+# DAY 5 & 7: Serve the frontend files
+# This tells FastAPI where our frontend files live so it can serve them.
+FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
+
+# Serve index.html when the user visits the root URL
 @app.get("/")
-async def root():
+async def serve_index():
     """
-    Health check endpoint. 
-    When you visit http://localhost:8000/ it will return this message.
+    Serves the main frontend page.
+    When you visit http://localhost:8000/ it will load the web app.
     """
-    return {"message": "Welcome to AI MOM API! The server is running successfully."}
+    return FileResponse(FRONTEND_DIR / "index.html")
+
+# Serve all other static files (CSS, JS) from the frontend folder
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 # DAY 2 & 3: The WebSocket Engine & Live Transcription
 # This endpoint listens for a WebSocket connection from the frontend.
