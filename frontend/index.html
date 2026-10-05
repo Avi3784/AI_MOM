@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI MOM - Meeting Minutes</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>AI MOM</h1>
+        <p class="subtitle">AI-Powered Meeting Minutes</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Controls Section -->
+        <section class="controls">
+            <button id="start-btn" class="btn btn-start">Start Meeting</button>
+            <button id="stop-btn" class="btn btn-stop" disabled>Stop Meeting</button>
+            <button id="summarize-btn" class="btn btn-summarize" disabled>Generate Summary</button>
+            <span id="status" class="status">Ready</span>
+        </section>
+
+        <!-- Two Column Layout -->
+        <div class="columns">
+
+            <!-- Left Column: Live Transcript -->
+            <section class="panel transcript-panel">
+                <div class="panel-header">
+                    <h2>Live Transcript</h2>
+                    <button id="copy-transcript-btn" class="btn-small" disabled>Copy</button>
+                </div>
+                <div id="transcript" class="content-area">
+                    <p class="placeholder">Click "Start Meeting" and begin speaking...</p>
+                </div>
+            </section>
+
+            <!-- Right Column: AI Summary -->
+            <section class="panel summary-panel">
+                <div class="panel-header">
+                    <h2>Meeting Summary</h2>
+                    <button id="copy-summary-btn" class="btn-small" disabled>Copy</button>
+                </div>
+                <div id="summary" class="content-area">
+                    <p class="placeholder">Summary will appear here after you click "Generate Summary".</p>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Built with FastAPI, Groq API, and Vanilla JS</p>
+    </footer>
+
+    <!-- Markdown rendering library for the AI summary -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
